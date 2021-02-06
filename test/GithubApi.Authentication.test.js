@@ -11,12 +11,25 @@ describe('Github Api Test', () => {
     it('Via OAuth2 Tokens by Header', async () => {
       const response = await agent
         .get(`${urlBase}/repos/${githubUserName}/${repository}`)
-        .auth('token', '4a403980178d1de41eedb91b73f79407926f46f5')
+        .auth('token', process.env.ACCESS_TOKEN)
         .set('User-Agent', 'agent');
       expect(response.status).to.equal(statusCode.OK);
       expect(response.body.description).equal(
         'This is a Workshop about Api Testing in JavaScript'
       );
+    });
+
+    it('Via OAuth2 Tokens by parameter', async () => {
+      agent
+        .get(`${urlBase}/repo/${githubUserName}/${repository}`)
+        .query(`access_token=${process.env.ACCESS_TOKEN}`)
+        .set('User-Agent', 'agent')
+        .then((response) => {
+          expect(response.status).to.equal(statusCode.OK);
+          expect(response.body.description).equal(
+            'This is a Workshop about Api Testing in JavaScript'
+          );
+        });
     });
   });
 });
